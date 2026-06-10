@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mundial 2026 | Fixture interactivo</title>
+  <meta name="description" content="Fixture interactivo del Mundial 2026 con grupos, partidos, llave y recordatorios de calendario." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg"></div>
+  <header class="hero">
+    <nav class="topbar">
+      <div class="mark">⚽</div>
+      <div class="navlinks">
+        <a href="#grupos">Grupos</a>
+        <a href="#partidos">Partidos</a>
+        <a href="#llave">Llave</a>
+        <a href="#noticias">Noticias</a>
+      </div>
+    </nav>
+    <div class="heroContent">
+      <p class="eyebrow">Fixture interactivo + recordatorios</p>
+      <h1>Mundial 2026</h1>
+      <p class="lead">Elegí los partidos que no querés perderte, cargá resultados, seguí las tablas y armá el camino hasta la final.</p>
+      <div class="heroActions">
+        <a class="btn primary" href="#partidos">Ver partidos</a>
+        <button class="btn" id="downloadSelectedTop">Descargar mis recordatorios</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel introPanel">
+      <div>
+        <span class="tag">Público y neutro</span>
+        <h2>Armá tu propio Mundial</h2>
+        <p>Los datos quedan guardados en este dispositivo. Para usarlo como recordatorio, activá partidos y elegí entre descargarlos o abrirlos directo en Google Calendar.</p>
+      </div>
+      <div class="statsMini">
+        <div><strong>48</strong><span>selecciones</span></div>
+        <div><strong>12</strong><span>grupos</span></div>
+        <div><strong>72</strong><span>partidos de grupo</span></div>
+        <div><strong>32</strong><span>clasificados</span></div>
+        <div><strong>104</strong><span>partidos totales</span></div>
+      </div>
+    </section>
+
+    <section class="panel selectedPanel">
+      <div class="sectionHead compact">
+        <div>
+          <span class="kicker">Alarmas</span>
+          <h2>Mis partidos activados</h2>
+        </div>
+        <div class="smallActions"><button class="btn small" id="openSelectedGoogle">Google Calendar</button><button class="btn small" id="downloadSelected">Descargar .ics</button></div>
+      </div>
+      <div id="selectedMatches" class="selectedList empty">Todavía no activaste ningún partido.</div>
+    </section>
+
+    <section id="grupos" class="section">
+      <div class="sectionHead">
+        <div><span class="kicker">01</span><h2>Grupos</h2></div>
+        <button class="btn small" id="resetResults">Reiniciar resultados</button>
+      </div>
+      <div id="groupsGrid" class="groupsGrid"></div>
+    </section>
+
+    <section id="partidos" class="section">
+      <div class="sectionHead">
+        <div><span class="kicker">02</span><h2>Partidos de fase de grupos</h2></div>
+        <div class="filters"><input id="searchInput" placeholder="Buscar selección, grupo o ciudad..." /></div>
+      </div>
+      <div id="matchesList" class="matchesList"></div>
+    </section>
+
+    <section id="llave" class="section">
+      <div class="sectionHead">
+        <div><span class="kicker">03</span><h2>Fase eliminatoria</h2></div>
+      </div>
+      <p class="note">Formato 2026: clasifican 32 selecciones a dieciseisavos. La llave usa las posiciones calculadas por los resultados cargados. Los cruces con terceros dependen de cuáles sean los 8 mejores terceros, por eso se muestran como opción variable.</p>
+      <div class="bracketScroll"><div id="bracket" class="bracket"></div></div>
+    </section>
+    <section id="noticias" class="section">
+      <div class="sectionHead">
+        <div><span class="kicker">04</span><h2>Noticias destacadas de Latinoamérica</h2></div>
+        <button class="btn small" id="refreshNews">Actualizar noticias</button>
+      </div>
+      <p class="note">Selección curada desde medios en español. Se muestran titulares y enlaces a la fuente original.</p>
+      <div id="newsFilters" class="newsFilters"></div>
+      <div id="newsList" class="newsGrid"><article class="newsCard mutedCard">Cargando noticias...</article></div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Fixture base cargado con horarios convertidos a Uruguay. Confirmá siempre posibles cambios oficiales antes de un partido. Los recordatorios se cargan 15 minutos antes y como “disponible”, para no bloquear agenda.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
