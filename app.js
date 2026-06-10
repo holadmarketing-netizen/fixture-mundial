@@ -109,7 +109,31 @@ let activeNewsTeams=JSON.parse(localStorage.getItem('wc2026NewsTeams')||'["URU",
 function renderNewsFilters(){ const box=byId('newsFilters'); if(!box)return; box.innerHTML=LATAM_TEAMS.map(t=>`<button class="filterChip ${activeNewsTeams.includes(t)?'active':''}" data-news-team="${t}">${team(t)}</button>`).join(''); }
 function decodeHTML(str){ const txt=document.createElement('textarea'); txt.innerHTML=str; return txt.value; }
 function stripTags(str){ return decodeHTML((str||'').replace(/<[^>]+>/g,'')).trim(); }
-async function fetchNews(){ const list=byId('newsList'); if(!list)return; list.innerHTML='<article class="newsCard mutedCard">Buscando noticias destacadas...</article>'; const teams=activeNewsTeams.length?activeNewsTeams:['URU','ARG','BRA','COL','MEX']; const queries=teams.slice(0,6).map(t=>`(${displayName(t)} OR selección ${displayName(t)}) Mundial 2026 (${NEWS_SOURCES.join(' OR ')})`); const urls=queries.map(q=>`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=es-419&gl=UY&ceid=UY:es-419')}`); try{ const responses=await Promise.all(urls.map(u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null))); const seen=new Set(), items=[]; responses.forEach(data=>(data?.items||[]).forEach(it=>{ const title=stripTags(it.title).replace(/ - Google News$/,''); const key=title.toLowerCase().slice(0,80); if(seen.has(key))return; seen.add(key); const source=stripTags(it.author||'Medio'); items.push({title,link:it.link,source,date:it.pubDate,desc:stripTags(it.description).slice(0,180)}); })); const top=items.slice(0,9); list.innerHTML=top.length?top.map(n=>`<article class="newsCard"><div class="newsSource"><span>${n.source||'Medio'}</span><span>${n.date?new Date(n.date).toLocaleDateString('es-UY'):''}</span></div><h3>${n.title}</h3><p>${n.desc||'Abrí la nota para leer el desarrollo completo en la fuente original.'}</p><a class="readMore" href="${n.link}" target="_blank" rel="noopener">Leer nota</a></article>`).join(''):'<article class="newsCard mutedCard">No encontré noticias recientes con esos filtros.</article>'; }catch(e){ list.innerHTML='<article class="newsCard mutedCard">No se pudieron cargar noticias ahora.</article>'; } }
+async function fetchNews(){ const list=byId('newsList'); if(!list)return; list.innerHTML='<article class="newsCard mutedCard">Buscando noticias destacadas...</article>'; const teams=activeNewsTeams.length?activeNewsTeams:['URU','ARG','BRA','COL','MEX']; const queries=teams.slice(0,6).map(t=>`(${displayName(t)} OR selección ${displayName(t)}) Mundial 2026 (${NEWS_SOURCES.join(' OR ')})`); const urls = queries.map(
+  q => `https://fixture-mundial-iota.vercel.app/api/news?q=${encodeURIComponent(q)}`
+); try{ const responses = await Promise.all(
+  urls.map(async u => {
+    try {
+      const xml = await fetch(u).then(r => r.text());
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(xml, "text/xml");
+
+      const items = [...doc.querySelectorAll("item")].map(item => ({
+        title: item.querySelector("title")?.textContent || "",
+        link: item.querySelector("link")?.textContent || "",
+        pubDate: item.querySelector("pubDate")?.textContent || "",
+        description: item.querySelector("description")?.textContent || "",
+        author: item.querySelector("source")?.textContent || "Medio"
+      }));
+
+      return { items };
+
+    } catch {
+      return null;
+    }
+  })
+); const seen=new Set(), items=[]; responses.forEach(data=>(data?.items||[]).forEach(it=>{ const title=stripTags(it.title).replace(/ - Google News$/,''); const key=title.toLowerCase().slice(0,80); if(seen.has(key))return; seen.add(key); const source=stripTags(it.author||'Medio'); items.push({title,link:it.link,source,date:it.pubDate,desc:stripTags(it.description).slice(0,180)}); })); const top=items.slice(0,9); list.innerHTML=top.length?top.map(n=>`<article class="newsCard"><div class="newsSource"><span>${n.source||'Medio'}</span><span>${n.date?new Date(n.date).toLocaleDateString('es-UY'):''}</span></div><h3>${n.title}</h3><p>${n.desc||'Abrí la nota para leer el desarrollo completo en la fuente original.'}</p><a class="readMore" href="${n.link}" target="_blank" rel="noopener">Leer nota</a></article>`).join(''):'<article class="newsCard mutedCard">No encontré noticias recientes con esos filtros.</article>'; }catch(e){ list.innerHTML='<article class="newsCard mutedCard">No se pudieron cargar noticias ahora.</article>'; } }
 
 document.addEventListener('input',e=>{ if(e.target.matches('[data-score]') && !e.target.readOnly){ const [id,side]=e.target.dataset.score.split(':'); state.scores[id]=state.scores[id]||{a:'',b:''}; state.scores[id][side]=e.target.value.replace(/[^0-9]/g,''); save(); renderGroups(); renderBracket(); } if(e.target.id==='searchInput') renderMatches(); });
 document.addEventListener('click',e=>{ const sel=e.target.closest('[data-select]'); if(sel){ const id=sel.dataset.select; state.selected=state.selected.includes(id)?state.selected.filter(x=>x!==id):[...state.selected,id]; save(); refresh(); } const goog=e.target.closest('[data-google]'); if(goog){ const m=fixtures.find(x=>x.id===goog.dataset.google); if(m) openGoogleForMatches([m]); } const ics=e.target.closest('[data-ics]'); if(ics){ const m=fixtures.find(x=>x.id===ics.dataset.ics); if(m) download(`${displayName(m.a)}-vs-${displayName(m.b)}.ics`.replaceAll(' ','-'),makeICS([m])); } const news=e.target.closest('[data-news-team]'); if(news){ const t=news.dataset.newsTeam; activeNewsTeams=activeNewsTeams.includes(t)?activeNewsTeams.filter(x=>x!==t):[...activeNewsTeams,t]; localStorage.setItem('wc2026NewsTeams',JSON.stringify(activeNewsTeams)); renderNewsFilters(); fetchNews(); } });
