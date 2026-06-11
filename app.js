@@ -65,10 +65,12 @@ function buildDataFromAPI(matches){
   }).sort((x,y)=>new Date(x.d)-new Date(y.d));
 }
 function scoreFor(m){
-  const ft=m.score?.fullTime;
-  if(Number.isInteger(ft?.home) && Number.isInteger(ft?.away)) return {a:ft.home,b:ft.away,source:'api'};
-  const sc=state.scores[m.id];
-  if(sc && sc.a!=='' && sc.b!=='') return {a:+sc.a,b:+sc.b,source:'manual'};
+  const ft = m.score?.fullTime;
+
+  if(Number.isInteger(ft?.home) && Number.isInteger(ft?.away)){
+    return { a: ft.home, b: ft.away, source: 'api' };
+  }
+
   return null;
 }
 function initStats(){ const s={}; Object.entries(GROUPS).forEach(([g,teams])=>teams.forEach(t=>s[t]={team:t,g,pj:0,pg:0,pe:0,pp:0,gf:0,gc:0,dg:0,pts:0})); return s; }
@@ -86,7 +88,7 @@ function renderGroups(){
 function renderMatches(){
  const list=byId('matchesList'); if(!list) return; const q=(byId('searchInput')?.value||'').toLowerCase();
  const items=fixtures.filter(m=>m.stage==='GROUP_STAGE').filter(m=>`${m.g} ${m.city} ${displayName(m.a)} ${displayName(m.b)} ${m.a} ${m.b}`.toLowerCase().includes(q));
- list.innerHTML = items.length ? items.map(m=>{ const sc=scoreFor(m); const manual=state.scores[m.id]||{a:'',b:''}; const active=state.selected.includes(m.id); const locked=sc?.source==='api'; return `<article class="matchCard"><div><div class="matchMeta">Grupo ${m.g} · ${fmtDate(m.d)} · ${m.city}<span class="statusPill">${statusName(m.status)}</span></div><div class="teams"><span>${team(m.a)}</span><div class="scoreBox ${locked?'locked':''}"><input inputmode="numeric" min="0" value="${sc?sc.a:manual.a}" data-score="${m.id}:a" placeholder="-" ${locked?'readonly title="Resultado desde API"':''}> <span>-</span> <input inputmode="numeric" min="0" value="${sc?sc.b:manual.b}" data-score="${m.id}:b" placeholder="-" ${locked?'readonly title="Resultado desde API"':''}></div><span>${team(m.b)}</span></div></div><div class="matchActions"><button class="iconBtn ${active?'active':''}" data-select="${m.id}">${active?'🔔 Activado':'🔔 Activar'}</button><button class="iconBtn" data-google="${m.id}">Google</button><button class="iconBtn" data-ics="${m.id}">.ics</button></div></article>` }).join('') : '<article class="matchCard">Cargando partidos oficiales...</article>';
+ list.innerHTML = items.length ? items.map(m=>{ const sc=scoreFor(m); const manual=state.scores[m.id]||{a:'',b:''}; const active=state.selected.includes(m.id); const locked = true; return `<article class="matchCard"><div><div class="matchMeta">Grupo ${m.g} · ${fmtDate(m.d)} · ${m.city}<span class="statusPill">${statusName(m.status)}</span></div><div class="teams"><span>${team(m.a)}</span><div class="scoreBox ${locked?'locked':''}"><input inputmode="numeric" min="0" value="${sc?sc.a:manual.a}" data-score="${m.id}:a" placeholder="-" ${locked?'readonly title="Resultado desde API"':''}> <span>-</span> <input inputmode="numeric" min="0" value="${sc?sc.b:manual.b}" data-score="${m.id}:b" placeholder="-" ${locked?'readonly title="Resultado desde API"':''}></div><span>${team(m.b)}</span></div></div><div class="matchActions"><button class="iconBtn ${active?'active':''}" data-select="${m.id}">${active?'🔔 Activado':'🔔 Activar'}</button><button class="iconBtn" data-google="${m.id}">Google</button><button class="iconBtn" data-ics="${m.id}">.ics</button></div></article>` }).join('') : '<article class="matchCard">Cargando partidos oficiales...</article>';
 }
 function renderBracket(){
  const box=byId('bracket'); if(!box) return;
@@ -140,5 +142,10 @@ document.addEventListener('click',e=>{ const sel=e.target.closest('[data-select]
 byId('downloadSelected').onclick=byId('downloadSelectedTop').onclick=()=>{ const ms=fixtures.filter(m=>state.selected.includes(m.id)); if(!ms.length){alert('Primero activá al menos un partido.');return} download('mis-partidos-mundial-2026.ics',makeICS(ms)); };
 byId('openSelectedGoogle').onclick=()=>{ const ms=fixtures.filter(m=>state.selected.includes(m.id)); if(!ms.length){alert('Primero activá al menos un partido.');return} openGoogleForMatches(ms); };
 byId('refreshNews').onclick=fetchNews;
-byId('resetResults').onclick=()=>{ if(confirm('¿Borrar resultados manuales y partidos activados?')){ state.scores={}; state.ko={}; state.selected=[]; save(); refresh(); } };
-renderNewsFilters(); refresh(); fetchNews(); loadOfficialFixture();
+renderNewsFilters();
+refresh();
+fetchNews();
+loadOfficialFixture();
+
+setInterval(loadOfficialFixture, 1800000);
+setInterval(fetchNews, 900000);
