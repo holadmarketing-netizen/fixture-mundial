@@ -5,7 +5,8 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
-
+  
+  res.setHeader("Cache-Control", "s-maxage=1800, stale-while-revalidate=300");
   try {
     const response = await fetch(
       "https://api.football-data.org/v4/competitions/WC/matches",
