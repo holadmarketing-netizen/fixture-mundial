@@ -2,3 +2,19 @@
 .smallActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.newsFilters{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 22px}.filterChip{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);border-radius:999px;padding:9px 12px;cursor:pointer;font-weight:800}.filterChip.active{background:rgba(217,177,95,.25);border-color:rgba(217,177,95,.6)}.newsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.newsCard{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.035));border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);min-height:160px}.newsCard h3{margin:8px 0 10px;font-size:1.05rem;line-height:1.25}.newsCard p{color:var(--muted);font-size:.9rem;line-height:1.35}.newsSource{display:flex;justify-content:space-between;gap:8px;color:var(--gold);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.newsCard a.readMore{display:inline-block;margin-top:12px;color:var(--text);font-weight:900;border-bottom:1px solid var(--line)}.mutedCard{color:var(--muted)}.calendarRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.apiNotice{margin-top:10px;color:var(--muted);font-size:.85rem}@media(max-width:900px){.newsGrid{grid-template-columns:1fr}.smallActions{justify-content:flex-start;margin-top:10px}}
 .crest{width:22px;height:22px;object-fit:contain;vertical-align:middle;margin-right:7px;border-radius:50%;background:rgba(255,255,255,.08)}
 .teamName{display:inline-flex;align-items:center;gap:0;min-width:0}.statusPill{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--muted);font-size:.72rem;font-weight:900;margin-left:6px}.apiStatus{margin:10px 0 0;color:var(--muted);font-size:.9rem}.apiStatus.ok{color:var(--green)}.apiStatus.error{color:var(--danger)}.slotTeam button{display:flex;align-items:center;gap:4px}.scoreBox.locked input{opacity:.85;border-color:rgba(101,214,139,.35)}
+.logoMark{
+  width:72px;
+  height:72px;
+  padding:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.logoMark img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
