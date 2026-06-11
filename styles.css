@@ -3,18 +3,16 @@
 .crest{width:22px;height:22px;object-fit:contain;vertical-align:middle;margin-right:7px;border-radius:50%;background:rgba(255,255,255,.08)}
 .teamName{display:inline-flex;align-items:center;gap:0;min-width:0}.statusPill{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--muted);font-size:.72rem;font-weight:900;margin-left:6px}.apiStatus{margin:10px 0 0;color:var(--muted);font-size:.9rem}.apiStatus.ok{color:var(--green)}.apiStatus.error{color:var(--danger)}.slotTeam button{display:flex;align-items:center;gap:4px}.scoreBox.locked input{opacity:.85;border-color:rgba(101,214,139,.35)}
 .logoMark{
-  width:180px;
-  height:110px;
-  padding:0px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+  width:220px;
+  height:120px;
+  border:none;
+  background:transparent;
+  box-shadow:none;
 }
 
 .logoMark img{
-  width:100%;
-  height:100%;
+  width:350%;
+  height:350%;
   object-fit:contain;
-  display:block;
+  transform:scale(3.5);
 }
