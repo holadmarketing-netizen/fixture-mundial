@@ -28,4 +28,14 @@
   height:100%;
   object-fit:contain;
   display:block;
+}.whatsappBtn{
+  background:#25D366;
+  color:white;
+  border:none;
+  font-weight:900;
+}
+
+.whatsappBtn:hover{
+  background:#1fb857;
+  transform:translateY(-2px);
 }
